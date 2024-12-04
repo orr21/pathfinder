@@ -2,15 +2,57 @@ name: Esto es una demo
 on: [push]
 
 jobs:
-  simple:
+  archetype:
     runs-on: ubuntu-latest
+    outputs:
+      pom_exists: ${{ steps.check-pom.outputs.exists }}
     steps:
-      - run: echo "Hola mundo"
-        name: Hola mundo
-      - run: echo "Adios"
-        name: Adios
-      - run: echo "..."
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - run: echo "This job's status is ${{ job.status }}."
+      # Paso para realizar checkout del repositorio
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3
+
+      # Paso para verificar si el archivo pom.xml existe
+      - name: Comprobar si existe pom.xml
+        id: check-pom
+        run: |
+          if [ -f "pom.xml" ]; then
+            echo "El archivo pom.xml existe en el repositorio."
+            echo "::set-output name=exists::true"
+          else
+            echo "El archivo pom.xml no existe en el repositorio."
+            echo "::set-output name=exists::false"
+            exit 1 # Falla el trabajo si no existe
+
+  build:
+    runs-on: ubuntu-latest
+    needs: archetype
+    if: ${{ needs.archetype.outputs.pom_exists == 'true' }}
+    steps:
+      # Paso para realizar checkout del repositorio
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3
+
+      # Paso para configurar Java
+      - name: Configurar Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      # Paso para construir el proyecto con Maven
+      - name: Build con Maven
+        run: mvn clean install
+
+  code-coverage:
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ needs.archetype.outputs.pom_exists == 'true' }}
+    steps:
+      # Paso para realizar checkout del repositorio
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3
+
+      # Paso para ejecutar pruebas y generar cobertura
+      - name: Ejecutar pruebas y generar cobertura
+        run: mvn clean verify
 

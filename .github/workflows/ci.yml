@@ -1,0 +1,19 @@
+name: Esto es una demo
+on: [push]
+
+jobs:
+  simple:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Hola mundo"
+        name: Hola mundo
+      - run: echo "Adios"
+        name: Adios
+      - run: echo "..."
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: List files in the repositoriy
+        run: |
+          ls ~{{ github.workspace}}
+      - run: echo "This job's status is ${{ job.status }}."
+

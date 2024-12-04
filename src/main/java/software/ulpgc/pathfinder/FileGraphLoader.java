@@ -45,7 +45,6 @@ public class FileGraphLoader implements GraphLoader {
 		graph.addVertex(target);
 		graph.addEdge(source, target);
 		graph.setEdgeWeight(source, target, weight);
-
 	}
 
 	private double toDouble(String value) throws ParseException {

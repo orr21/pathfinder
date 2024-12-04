@@ -26,7 +26,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: archetype
-    if: ${{ env.exists == 'true' }}
+    if: ${{ needs.acrchetype.outputs.pom_exists == 'true' }}
     steps:
       # Paso para realizar checkout del repositorio
       - name: Checkout del repositorio
@@ -46,7 +46,6 @@ jobs:
   code-coverage:
     runs-on: ubuntu-latest
     needs: build
-    if: ${{ env.exists == 'true' }}
     steps:
       # Paso para realizar checkout del repositorio
       - name: Checkout del repositorio

@@ -15,18 +15,18 @@ jobs:
       - name: Comprobar si existe pom.xml
         id: check-pom
         run: |
-          if [ -f "pom.xml" ]; then
+          if [ test -e "./pom.xml" ]; then
             echo "El archivo pom.xml existe en el repositorio."
-            echo "::set-output name=exists::true"
+            echo "exists=true" >> $GITHUB_ENV
           else
             echo "El archivo pom.xml no existe en el repositorio."
-            echo "::set-output name=exists::false"
+            echo "exists=false" >> $GITHUB_ENV
             exit 1 # Falla el trabajo si no existe
 
   build:
     runs-on: ubuntu-latest
     needs: archetype
-    if: ${{ needs.archetype.outputs.pom_exists == 'true' }}
+    if: ${{ env.exists == 'true' }}
     steps:
       # Paso para realizar checkout del repositorio
       - name: Checkout del repositorio
@@ -46,7 +46,7 @@ jobs:
   code-coverage:
     runs-on: ubuntu-latest
     needs: build
-    if: ${{ needs.archetype.outputs.pom_exists == 'true' }}
+    if: ${{ env.exists == 'true' }}
     steps:
       # Paso para realizar checkout del repositorio
       - name: Checkout del repositorio

@@ -13,13 +13,14 @@ jobs:
       - name: Comprobar si existe pom.xml
         id: check-pom
         run: |
-          if [ test -e ./pom.xml ]; then
+          if [ test -f "pom.xml" ]; then
             echo "El archivo pom.xml existe en el repositorio."
             echo "exists=true" >> $GITHUB_ENV
           else
             echo "El archivo pom.xml no existe en el repositorio."
             echo "exists=false" >> $GITHUB_ENV
             exit 1 # Falla el trabajo si no existe
+          fi
 
   build:
     runs-on: ubuntu-latest

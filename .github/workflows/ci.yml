@@ -7,15 +7,13 @@ jobs:
     outputs:
       pom_exists: ${{ steps.check-pom.outputs.exists }}
     steps:
-      # Paso para realizar checkout del repositorio
       - name: Checkout del repositorio
         uses: actions/checkout@v3
 
-      # Paso para verificar si el archivo pom.xml existe
       - name: Comprobar si existe pom.xml
         id: check-pom
         run: |
-          if [ test -e "./pom.xml" ]; then
+          if [ test -e ./pom.xml ]; then
             echo "El archivo pom.xml existe en el repositorio."
             echo "exists=true" >> $GITHUB_ENV
           else
@@ -28,18 +26,18 @@ jobs:
     needs: archetype
     if: ${{ needs.acrchetype.outputs.pom_exists == 'true' }}
     steps:
-      # Paso para realizar checkout del repositorio
+
       - name: Checkout del repositorio
         uses: actions/checkout@v3
 
-      # Paso para configurar Java
+
       - name: Configurar Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '21'
 
-      # Paso para construir el proyecto con Maven
+
       - name: Build con Maven
         run: mvn clean install
 
@@ -47,11 +45,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      # Paso para realizar checkout del repositorio
+
       - name: Checkout del repositorio
         uses: actions/checkout@v3
 
-      # Paso para ejecutar pruebas y generar cobertura
+
       - name: Ejecutar pruebas y generar cobertura
         run: mvn clean verify
 

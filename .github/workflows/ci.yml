@@ -8,18 +8,14 @@ jobs:
       pom_exists: ${{ steps.check-pom.outputs.exists }}
     steps:
       - name: Checkout del repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Comprobar si existe pom.xml
         id: check-pom
         run: |
-          if [ test -f "pom.xml" ]; then
-            echo "El archivo pom.xml existe en el repositorio."
-            echo "exists=true" >> $GITHUB_ENV
-          else
-            echo "El archivo pom.xml no existe en el repositorio."
-            echo "exists=false" >> $GITHUB_ENV
-            exit 1 # Falla el trabajo si no existe
+          if [ ! -f pom.xml ]; then
+            echo "Error: pom.xml not found."
+            exit 1
           fi
 
   build:
@@ -29,11 +25,11 @@ jobs:
     steps:
 
       - name: Checkout del repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
 
       - name: Configurar Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -48,7 +44,7 @@ jobs:
     steps:
 
       - name: Checkout del repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
 
       - name: Ejecutar pruebas y generar cobertura
